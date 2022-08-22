@@ -1,0 +1,120 @@
+openapi: 3.0.3
+
+info:
+  version: 11.0.12
+  title: Billing Account
+  description: Billing account service
+
+servers:
+  - url: https://localhost:8080/
+    description: This is where the api is
+
+# tags:
+#   - name: "Billing Account Service"
+
+# define where user gets different endpoints from
+paths:
+  /vois/internship-program/v1/{ban}/subscribers:
+    parameters:
+      - name: ban
+        description: ban number
+        schema:
+          type: string
+        in: path
+        required: true
+    get:
+      summary: Retrieve subscribers by a specific ban
+      tags:
+        - Find subscriber
+      description: Get all subscriber's billing account for specific ban
+      operationId: getAllSubscribersByBan
+      responses:
+        "200":
+          description: This is okay
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/subscriber'
+        "404":
+          description: Subscribers not found
+        "400":
+          description: Bad request, parameter ban is not valid as it can't contain characters
+
+  /vois/internship-program/v1/{ban}.{subscriber}:
+    parameters:
+      - name: ban
+        description: ban number
+        schema:
+          type: string
+        in: path
+        required: true
+      - name: subscriber
+        description: subscriber id
+        schema:
+          type: string
+        in: path
+        required: true
+    get:
+      summary: Retrieve subscriber Info
+      tags:
+        - Find subscriber info
+      description: Retrieve subscriber Info
+      operationId: getSubscriber
+      responses:
+        "200":
+          description: This is okay
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/subscriber'
+        "404":
+          description: Subscribers not found
+        "400":
+          description: Bad request, parameter ban is not valid as it can't contain characters
+        "401":
+          description: Unauthorized, Subscriber not related to the ban
+
+
+  /vois/internship-program/v1/subscriber:
+    post:
+      summary: Create new subscriber
+      operationId: createSubscriber
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/subscriber'
+      tags:
+        - subscriber
+      description: Create new subscriber
+      responses:
+        "201":
+          description: successfully created
+        "403":
+          description: Forbidden, Subscriber Already Exists
+
+components:
+
+  schemas:
+    subscriber:
+      description: This is the subscriber model
+      type: object
+      required:
+        - ban
+        - subscribed
+      properties:
+        ban:
+          type: string
+        subscribed:
+          type: string
+        balanceType:
+          type: string
+        balanceAmount:
+          type: string
+        amountDue:
+          type: string
